@@ -36,6 +36,7 @@ extern "C" {
 #include "stm32f4xx_ll_utils.h"
 #include "stm32f4xx_ll_pwr.h"
 #include "stm32f4xx_ll_dma.h"
+#include "stm32f4xx_ll_tim.h"
 #include "stm32f4xx_ll_gpio.h"
 
 #if defined(USE_FULL_ASSERT)
@@ -70,6 +71,20 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define LCD_RS_Pin LL_GPIO_PIN_7
+#define LCD_RS_GPIO_Port GPIOE
+#define LCD_RW_Pin LL_GPIO_PIN_10
+#define LCD_RW_GPIO_Port GPIOE
+#define LCD_Enable_Pin LL_GPIO_PIN_11
+#define LCD_Enable_GPIO_Port GPIOE
+#define LCD_DB4_Pin LL_GPIO_PIN_12
+#define LCD_DB4_GPIO_Port GPIOE
+#define LCD_DB5_Pin LL_GPIO_PIN_13
+#define LCD_DB5_GPIO_Port GPIOE
+#define LCD_DB6_Pin LL_GPIO_PIN_14
+#define LCD_DB6_GPIO_Port GPIOE
+#define LCD_DB7_Pin LL_GPIO_PIN_15
+#define LCD_DB7_GPIO_Port GPIOE
 #define LED4_Pin LL_GPIO_PIN_12
 #define LED4_GPIO_Port GPIOD
 #define LED3_Pin LL_GPIO_PIN_13
@@ -78,6 +93,16 @@ void Error_Handler(void);
 #define LED2_GPIO_Port GPIOD
 #define LED1_Pin LL_GPIO_PIN_15
 #define LED1_GPIO_Port GPIOD
+#define SW3_Pin LL_GPIO_PIN_6
+#define SW3_GPIO_Port GPIOC
+#define SW4_Pin LL_GPIO_PIN_8
+#define SW4_GPIO_Port GPIOC
+#define SW2_Pin LL_GPIO_PIN_9
+#define SW2_GPIO_Port GPIOC
+#define SW1_Pin LL_GPIO_PIN_15
+#define SW1_GPIO_Port GPIOA
+#define SW0_Pin LL_GPIO_PIN_11
+#define SW0_GPIO_Port GPIOC
 #ifndef NVIC_PRIORITYGROUP_0
 #define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
                                                                  4 bits for subpriority */
