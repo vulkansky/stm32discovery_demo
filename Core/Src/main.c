@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lcd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,13 +32,14 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define LED1_ON() LL_GPIO_SetOutputPin(GPIOD, LED1_Pin)
+#define LED1_ON()  LL_GPIO_SetOutputPin(GPIOD, LED1_Pin)
+#define LED2_ON()  LL_GPIO_SetOutputPin(GPIOD, LED2_Pin)
+#define LED3_ON()  LL_GPIO_SetOutputPin(GPIOD, LED3_Pin)
+#define LED4_ON()  LL_GPIO_SetOutputPin(GPIOD, LED4_Pin)
+
 #define LED1_OFF() LL_GPIO_ResetOutputPin(GPIOD, LED1_Pin)
-#define LED2_ON() LL_GPIO_SetOutputPin(GPIOD, LED2_Pin)
 #define LED2_OFF() LL_GPIO_ResetOutputPin(GPIOD, LED2_Pin)
-#define LED3_ON() LL_GPIO_SetOutputPin(GPIOD, LED3_Pin)
 #define LED3_OFF() LL_GPIO_ResetOutputPin(GPIOD, LED3_Pin)
-#define LED4_ON() LL_GPIO_SetOutputPin(GPIOD, LED4_Pin)
 #define LED4_OFF() LL_GPIO_ResetOutputPin(GPIOD, LED4_Pin)
 /* USER CODE END PD */
 
@@ -56,6 +57,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -101,16 +103,23 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-
+  LCD_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  LCD_SetPos(0, 0);
+  LCD_String("KHAI Demo");
+
   while (1)
   {
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
+	  LL_mDelay(100);
+
   }
   /* USER CODE END 3 */
 }
@@ -157,6 +166,75 @@ void SystemClock_Config(void)
 }
 
 /**
+  * @brief TIM1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM1_Init(void)
+{
+
+  /* USER CODE BEGIN TIM1_Init 0 */
+
+  /* USER CODE END TIM1_Init 0 */
+
+  LL_TIM_InitTypeDef TIM_InitStruct = {0};
+  LL_TIM_OC_InitTypeDef TIM_OC_InitStruct = {0};
+  LL_TIM_BDTR_InitTypeDef TIM_BDTRInitStruct = {0};
+
+  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* Peripheral clock enable */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM1);
+
+  /* USER CODE BEGIN TIM1_Init 1 */
+
+  /* USER CODE END TIM1_Init 1 */
+  TIM_InitStruct.Prescaler = 0;
+  TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
+  TIM_InitStruct.Autoreload = 65535;
+  TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+  TIM_InitStruct.RepetitionCounter = 0;
+  LL_TIM_Init(TIM1, &TIM_InitStruct);
+  LL_TIM_DisableARRPreload(TIM1);
+  LL_TIM_OC_EnablePreload(TIM1, LL_TIM_CHANNEL_CH1);
+  TIM_OC_InitStruct.OCMode = LL_TIM_OCMODE_PWM1;
+  TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
+  TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
+  TIM_OC_InitStruct.CompareValue = 0;
+  TIM_OC_InitStruct.OCPolarity = LL_TIM_OCPOLARITY_HIGH;
+  TIM_OC_InitStruct.OCNPolarity = LL_TIM_OCPOLARITY_HIGH;
+  TIM_OC_InitStruct.OCIdleState = LL_TIM_OCIDLESTATE_LOW;
+  TIM_OC_InitStruct.OCNIdleState = LL_TIM_OCIDLESTATE_LOW;
+  LL_TIM_OC_Init(TIM1, LL_TIM_CHANNEL_CH1, &TIM_OC_InitStruct);
+  LL_TIM_OC_DisableFast(TIM1, LL_TIM_CHANNEL_CH1);
+  LL_TIM_SetTriggerOutput(TIM1, LL_TIM_TRGO_RESET);
+  LL_TIM_DisableMasterSlaveMode(TIM1);
+  TIM_BDTRInitStruct.OSSRState = LL_TIM_OSSR_DISABLE;
+  TIM_BDTRInitStruct.OSSIState = LL_TIM_OSSI_DISABLE;
+  TIM_BDTRInitStruct.LockLevel = LL_TIM_LOCKLEVEL_OFF;
+  TIM_BDTRInitStruct.DeadTime = 0;
+  TIM_BDTRInitStruct.BreakState = LL_TIM_BREAK_DISABLE;
+  TIM_BDTRInitStruct.BreakPolarity = LL_TIM_BREAK_POLARITY_HIGH;
+  TIM_BDTRInitStruct.AutomaticOutput = LL_TIM_AUTOMATICOUTPUT_DISABLE;
+  LL_TIM_BDTR_Init(TIM1, &TIM_BDTRInitStruct);
+  /* USER CODE BEGIN TIM1_Init 2 */
+
+  /* USER CODE END TIM1_Init 2 */
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
+  /**TIM1 GPIO Configuration
+  PE9   ------> TIM1_CH1
+  */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_9;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_1;
+  LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -168,12 +246,26 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
 
   /**/
+  LL_GPIO_ResetOutputPin(GPIOE, LCD_RS_Pin|LCD_RW_Pin|LCD_Enable_Pin|LCD_DB4_Pin
+                          |LCD_DB5_Pin|LCD_DB6_Pin|LCD_DB7_Pin);
+
+  /**/
   LL_GPIO_ResetOutputPin(GPIOD, LED4_Pin|LED3_Pin|LED2_Pin|LED1_Pin);
+
+  /**/
+  GPIO_InitStruct.Pin = LCD_RS_Pin|LCD_RW_Pin|LCD_Enable_Pin|LCD_DB4_Pin
+                          |LCD_DB5_Pin|LCD_DB6_Pin|LCD_DB7_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = LED4_Pin|LED3_Pin|LED2_Pin|LED1_Pin;
@@ -182,6 +274,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = SW3_Pin|SW4_Pin|SW2_Pin|SW0_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = SW1_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  LL_GPIO_Init(SW1_GPIO_Port, &GPIO_InitStruct);
 
 }
 
