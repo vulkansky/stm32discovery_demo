@@ -94,6 +94,21 @@ void Error_Handler(void);
 #define LED2_GPIO_Port GPIOD
 #define LED1_Pin LL_GPIO_PIN_15
 #define LED1_GPIO_Port GPIOD
+#define SWT4_Pin LL_GPIO_PIN_6
+#define SWT4_GPIO_Port GPIOC
+#define SWT4_EXTI_IRQn EXTI9_5_IRQn
+#define SWT5_Pin LL_GPIO_PIN_8
+#define SWT5_GPIO_Port GPIOC
+#define SWT5_EXTI_IRQn EXTI9_5_IRQn
+#define SWT3_Pin LL_GPIO_PIN_9
+#define SWT3_GPIO_Port GPIOC
+#define SWT3_EXTI_IRQn EXTI9_5_IRQn
+#define SWT2_Pin LL_GPIO_PIN_15
+#define SWT2_GPIO_Port GPIOA
+#define SWT2_EXTI_IRQn EXTI15_10_IRQn
+#define SWT1_Pin LL_GPIO_PIN_11
+#define SWT1_GPIO_Port GPIOC
+#define SWT1_EXTI_IRQn EXTI15_10_IRQn
 #ifndef NVIC_PRIORITYGROUP_0
 #define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
                                                                  4 bits for subpriority */
