@@ -126,6 +126,11 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  LL_mDelay(1000);
+	  LED1_OFF();
+	  LED2_OFF();
+	  LED3_OFF();
+	  LED4_OFF();
+	  LL_mDelay(1000);
 
 	  result = DHT_getData(&sensor);
 	  char res[20];
@@ -319,31 +324,34 @@ static void MX_GPIO_Init(void)
 //SWT1 Button callback
 void SWT1_Callback()
 {
-	asm("NOP");  //testpoint
+	  LED1_ON();
 }
 
 //SWT2 Button callback
 void SWT2_Callback()
 {
-	asm("NOP");  //testpoint
+	  LED2_ON();
 }
 
 //SWT3 Button callback
 void SWT3_Callback()
 {
-	asm("NOP");  //testpoint
+	  LED3_ON();
 }
 
 //SWT4 Button callback
 void SWT4_Callback()
 {
-	asm("NOP"); //testpoint
+	  LED4_ON();
 }
 
 //SWT5 Button callback
 void SWT5_Callback()
 {
-	asm("NOP");  //testpoint
+	  LED1_ON();
+	  LED2_ON();
+	  LED3_ON();
+	  LED4_ON();
 }
 /* USER CODE END 4 */
 
